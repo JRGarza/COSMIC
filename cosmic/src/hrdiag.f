@@ -64,6 +64,7 @@
 *     For the core collapse prescription using results from
 *     (Sukhbold et al. 2016), SN engine N20,
 *     calling this prescription with remnantflag=5
+
       real*8 MheTEST_N20(185),MremTEST_N20(185), MCOTEST_N20(185)
       integer kstarTEST_N20(185)
       integer sizedatatest,kk,ii,Ntot
