@@ -63,7 +63,7 @@
 
 *     For the core collapse prescription using results from
 *     (Sukhbold et al. 2016), SN engine N20,
-*     calling this prescription with nsflag=5
+*     calling this prescription with remnantflag=5
       real*8 MheTEST_N20(185),MremTEST_N20(185), MCOTEST_N20(185)
       integer kstarTEST_N20(185)
       integer sizedatatest,kk,ii,Ntot
@@ -883,8 +883,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *Sukhbold+16. Then it interpolates the remnant mass.
 *
 
-                    call nearest_remnant(MheTEST,MremTEST,
-     &              kstarTEST,sizedatatest,mt)
+                    call nearest_remnant(MheTEST_N20,MremTEST_N20,
+     &              kstarTEST_N20,sizedatatest,mt)
 
 *                   estimate for the fallback fraction
                     fallback = remmass / mt
@@ -1274,8 +1274,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *Sukhbold+16. Then it interpolates the remnant mass.
 *
 
-                    call nearest_remnant(MheTEST,MremTEST,
-     &              kstarTEST,sizedatatest,mt)
+                    call nearest_remnant(MheTEST_N20,MremTEST_N20,
+     &              kstarTEST_N20,sizedatatest,mt)
 
 *                   estimate for the fallback fraction
                     fallback = remmass / mt
