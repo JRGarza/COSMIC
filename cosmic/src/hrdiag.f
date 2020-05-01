@@ -60,7 +60,222 @@
       external rzamsf,rtmsf,ralphf,rbetaf,rgammf,rhookf
       external rgbf,rminf,ragbf,rzahbf,rzhef,rhehgf,rhegbf,rpertf
       external mctmsf,mcgbtf,mcgbf,mcheif,mcagbf,lzahbf
-      
+
+*     For the core collapse prescription using results from
+*     (Sukhbold et al. 2016), SN engine N20,
+*     calling this prescription with nsflag=5
+      real*8 MheTEST_N20(185),MremTEST_N20(185), MCOTEST_N20(185)
+      integer kstarTEST_N20(185)
+      integer sizedatatest,kk,ii,Ntot
+      integer indinf,indsup,kresult
+      real*8 remmass,randnum1
+      character(len=99) file_name
+      real*8 minmass, maxmass,deltamass,masst
+
+
+
+      COMMON /INDINFIMUM/ indinf
+      COMMON /INDSUPREMUM/ indsup
+      COMMON /NEARREMNANT/ remmass,kresult
+      COMMON /RANDNUM/ randnum1
+
+      sizedatatest=185
+
+*     Helium mass pre-supernova from Sukhbold+16 models
+      data MheTEST_N20 /3.1964d0,3.3182d0,3.3902d0,3.4921d0,
+     & 3.6096d0,3.6312d0,3.6351d0,3.6816d0,
+     & 3.7342d0,3.7972d0,3.8077d0,3.8449d0,
+     & 3.8774d0,3.9192d0,3.9618d0,3.9777d0,
+     & 4.0086d0,4.0519d0,4.1021d0,4.1663d0,
+     & 4.1701d0,4.1831d0,4.1927d0,4.297d0,
+     & 4.3219d0,4.3475d0,4.381d0,4.4231d0,
+     & 4.4346d0,4.4889d0,4.5427d0,4.5465d0,
+     & 4.5684d0,4.6388d0,4.7186d0,4.724d0,
+     & 4.7319d0,4.7532d0,4.7933d0,4.8691d0,
+     & 4.8809d0,4.9072d0,4.9437d0,4.9823d0,
+     & 5.022d0,5.071d0,5.1004d0,5.1795d0,
+     & 5.1834d0,5.2169d0,5.2708d0,5.3005d0,
+     & 5.3343d0,5.3635d0,5.404d0,5.4475d0,
+     & 5.4848d0,5.5264d0,5.6116d0,5.6143d0,
+     & 5.6444d0,5.7588d0,5.7633d0,5.7981d0,
+     & 5.7992d0,5.8432d0,5.8831d0,5.9381d0,
+     & 5.9631d0,6.003d0,6.0088d0,6.0446d0,
+     & 6.0799d0,6.1254d0,6.1261d0,6.1665d0,
+     & 6.2123d0,6.2479d0,6.2742d0,6.325d0,
+     & 6.3332d0,6.3607d0,6.373d0,6.4596d0,
+     & 6.4898d0,6.4978d0,6.5159d0,6.576d0,
+     & 6.6071d0,6.6394d0,6.6775d0,6.7266d0,
+     & 6.7972d0,6.7999d0,6.8368d0,6.8758d0,
+     & 6.926d0,6.9801d0,7.0003d0,7.0381d0,
+     & 7.0903d0,7.1221d0,7.156d0,7.1992d0,
+     & 7.2492d0,7.2664d0,7.2832d0,7.3448d0,
+     & 7.368d0,7.4089d0,7.4557d0,7.4788d0,
+     & 7.5463d0,7.5731d0,7.6207d0,7.6699d0,
+     & 7.7331d0,7.7506d0,7.7993d0,7.8039d0,
+     & 7.8955d0,7.9677d0,7.9786d0,8.0263d0,
+     & 8.0441d0,8.1007d0,8.1088d0,8.1095d0,
+     & 8.1991d0,8.25d0,8.2983d0,8.3563d0,
+     & 8.3738d0,8.4086d0,8.4713d0,8.5118d0,
+     & 8.5182d0,8.6012d0,8.6276d0,8.6641d0,
+     & 8.7142d0,8.7655d0,8.8197d0,8.8359d0,
+     & 8.892d0,8.9199d0,8.9533d0,8.9679d0,
+     & 9.0901d0,9.1084d0,9.1092d0,9.1762d0,
+     & 9.2466d0,9.2498d0,9.3286d0,9.3303d0,
+     & 9.3734d0,9.3778d0,9.4201d0,9.4518d0,
+     & 9.5345d0,9.5887d0,9.5895d0,9.6275d0,
+     & 9.7075d0,9.7245d0,9.7628d0,9.7707d0,
+     & 9.7964d0,9.8276d0,9.8677d0,9.9378d0,
+     & 9.9469d0,10.006d0,10.0636d0,10.1196d0,
+     & 10.1411d0,10.182d0,10.2006d0,10.2881d0,
+     & 10.2981d0,10.746d0,11.185d0,11.5166d0,12.4963d0/
+
+*     Remnant mass from Sukhbold+16 models using the N20 engine
+      data MremTEST_N20 /1.558d0,1.577d0,1.627d0,1.662d0,
+     & 1.591d0,1.596d0,1.59d0,1.615d0,
+     & 1.614d0,1.623d0,1.629d0,1.658d0,
+     & 1.651d0,1.67d0,1.693d0,1.691d0,
+     & 1.695d0,1.72d0,1.747d0,1.762d0,
+     & 1.781d0,1.766d0,1.784d0,4.297d0,
+     & 4.3219d0,4.3475d0,4.381d0,4.4231d0,
+     & 1.552d0,4.4889d0,1.569d0,1.558d0,
+     & 1.671d0,1.589d0,1.54d0,1.553d0,
+     & 1.551d0,1.55d0,1.553d0,1.559d0,
+     & 1.554d0,1.566d0,1.566d0,1.568d0,
+     & 1.577d0,5.071d0,1.608d0,1.603d0,
+     & 1.587d0,1.598d0,1.63d0,5.3005d0,
+     & 1.769d0,1.715d0,1.79d0,1.768d0,
+     & 1.808d0,1.823d0,1.566d0,5.6143d0,
+     & 1.631d0,1.781d0,1.835d0,1.825d0,
+     & 1.833d0,1.623d0,1.499d0,1.668d0,
+     & 5.9631d0,2.033d0,6.0088d0,1.37d0,
+     & 1.443d0,6.1254d0,1.703d0,6.1665d0,
+     & 1.718d0,1.428d0,1.498d0,1.382d0,
+     & 1.906d0,1.371d0,6.373d0,6.4596d0,
+     & 1.898d0,1.745d0,6.5159d0,1.508d0,
+     & 1.551d0,1.917d0,6.6775d0,6.7266d0,
+     & 1.617d0,1.637d0,1.799d0,6.8758d0,
+     & 6.926d0,6.9801d0,7.0003d0,7.0381d0,
+     & 7.0903d0,7.1221d0,7.156d0,7.1992d0,
+     & 1.702d0,7.2664d0,7.2832d0,7.3448d0,
+     & 7.368d0,7.4089d0,7.4557d0,7.4788d0,
+     & 7.5463d0,7.5731d0,7.6207d0,7.6699d0,
+     & 7.7331d0,7.7506d0,7.7993d0,7.8039d0,
+     & 7.8955d0,7.9677d0,7.9786d0,8.0263d0,
+     & 8.0441d0,8.1007d0,8.1088d0,8.1095d0,
+     & 8.1991d0,8.25d0,1.877d0,1.8d0,
+     & 1.791d0,1.8d0,1.777d0,1.598d0,
+     & 1.58d0,1.684d0,1.672d0,1.679d0,
+     & 1.686d0,1.706d0,1.766d0,1.766d0,
+     & 1.755d0,1.763d0,1.763d0,1.754d0,
+     & 1.717d0,1.731d0,1.725d0,1.728d0,
+     & 4.962d0,9.2498d0,9.3286d0,9.3303d0,
+     & 9.3734d0,9.3778d0,9.4201d0,9.4518d0,
+     & 9.5345d0,9.5887d0,9.5895d0,9.6275d0,
+     & 9.7075d0,9.7245d0,9.7628d0,9.7707d0,
+     & 4.143d0,9.8276d0,9.8677d0,4.429d0,
+     & 6.936d0,10.006d0,10.0636d0,10.1196d0,
+     & 7.298d0,10.182d0,10.2006d0,10.2881d0,
+     & 10.2981d0,10.746d0,11.185d0,11.5166d0,12.4963d0/
+
+
+*     CO core mass pre-supernova from Sukhbold+16 models
+      data MCOTEST_N20 /2.0595d0,2.1501d0,2.1985d0,2.2752d0,
+     & 2.4519d0,2.44d0,2.4523d0,2.4894d0,
+     & 2.533d0,2.5895d0,2.6022d0,2.6274d0,
+     & 2.6595d0,2.6916d0,2.7301d0,2.763d0,
+     & 2.7691d0,2.8418d0,2.8475d0,2.9018d0,
+     & 2.9139d0,2.9214d0,2.9336d0,3.0219d0,
+     & 3.0365d0,3.069d0,3.1033d0,3.1306d0,
+     & 3.1333d0,3.1941d0,3.2509d0,3.2423d0,
+     & 3.2629d0,3.3337d0,3.387d0,3.4128d0,
+     & 3.4069d0,3.4413d0,3.4699d0,3.5294d0,
+     & 3.597d0,3.5719d0,3.601d0,3.6852d0,
+     & 3.7227d0,3.7286d0,3.7503d0,3.8203d0,
+     & 3.8341d0,3.8479d0,3.9025d0,3.9411d0,
+     & 3.9632d0,3.9834d0,4.0235d0,4.0638d0,
+     & 4.0953d0,4.1268d0,4.2044d0,4.0699d0,
+     & 4.2499d0,4.2352d0,4.2236d0,4.2363d0,
+     & 4.3235d0,4.4112d0,4.4438d0,4.4765d0,
+     & 4.4996d0,4.6194d0,4.5519d0,4.5555d0,
+     & 4.4605d0,4.5424d0,5.8716d0,4.5553d0,
+     & 4.608d0,4.7415d0,4.8154d0,4.8696d0,
+     & 6.1666d0,4.9036d0,6.2302d0,4.9618d0,
+     & 5.0095d0,4.9961d0,5.0409d0,5.0441d0,
+     & 5.129d0,5.128d0,5.0759d0,5.1125d0,
+     & 5.207d0,5.1345d0,5.1324d0,5.2081d0,
+     & 5.232d0,5.2953d0,5.3325d0,5.3566d0,
+     & 5.4207d0,5.4316d0,5.4156d0,5.4666d0,
+     & 7.1609d0,5.5315d0,5.5422d0,5.5802d0,
+     & 5.6046d0,5.6703d0,5.6948d0,5.7055d0,
+     & 5.7858d0,5.7965d0,5.8353d0,5.9024d0,
+     & 5.9557d0,5.9808d0,6.0058d0,6.0164d0,
+     & 6.1099d0,6.135d0,6.1894d0,6.2291d0,
+     & 6.2147d0,6.2989d0,6.2904d0,6.3244d0,
+     & 6.3605d0,6.4159d0,6.4821d0,6.5768d0,
+     & 6.5229d0,6.5333d0,6.7576d0,6.7533d0,
+     & 6.718d0,6.8522d0,6.8476d0,6.8584d0,
+     & 6.9628d0,6.958d0,7.079d0,7.0109d0,
+     & 7.085d0,7.0798d0,7.1543d0,7.1168d0,
+     & 7.2077d0,7.2611d0,7.202d0,7.3203d0,
+     & 7.3635d0,7.3904d0,9.3286d0,7.4337d0,
+     & 7.4441d0,7.4646d0,7.5042d0,7.5563d0,
+     & 7.6522d0,7.6626d0,7.6223d0,7.6912d0,
+     & 7.8017d0,7.7884d0,9.7628d0,7.7985d0,
+     & 7.7877d0,7.86d0,7.8873d0,7.8898d0,
+     & 7.9692d0,8.049d0,8.0413d0,8.0863d0,
+     & 8.1137d0,8.1411d0,8.1685d0,8.295d0,
+     & 8.2316d0,8.6331d0,9.0389d0,9.3542d0,10.1698d0/
+
+*     stellar type for the remnants from Sukhbold+16 models using
+*     N20 engine
+      data kstarTEST_N20 /13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,14,
+     & 14,14,14,14,
+     & 13,14,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,14,13,13,
+     & 13,13,13,14,
+     & 13,13,13,13,
+     & 13,13,13,14,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 14,13,14,13,
+     & 13,14,13,14,
+     & 13,13,13,13,
+     & 13,13,14,14,
+     & 13,13,14,13,
+     & 13,13,14,14,
+     & 13,13,13,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 13,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 13,13,13,13,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,
+     & 14,14,14,14,14/
+
+
 *
 *
 *       ---------------------------------------------------------------------
@@ -659,6 +874,24 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                          endif
                      endif
                      mc = mt
+                 elseif(remnantflag.eq.5)then
+*
+* Use the results from Sukhbold+16, N20 engine, as the
+*core collapse SN prescription. It assigns the remnant
+*type, BH=14 or NS=13, obtaining the nearest neighbor
+*of the pre-SN mass with respect the results from
+*Sukhbold+16. Then it interpolates the remnant mass.
+*
+
+                    call nearest_remnant(MheTEST,MremTEST,
+     &              kstarTEST,sizedatatest,mt)
+
+*                   estimate for the fallback fraction
+                    fallback = remmass / mt
+                    kw=kresult
+                    mt=remmass
+                    mc = mt
+
                   endif
 
 * Specify the baryonic to gravitational remnant mass prescription
@@ -1033,7 +1266,26 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                          endif
                      endif
                      mc = mt
+*
+* Use the results from Sukhbold+16, N20 engine, as the
+*core collapse SN prescription. It assigns the remnant
+*type, BH=14 or NS=13, obtaining the nearest neighbor
+*of the pre-SN mass with respect the results from
+*Sukhbold+16. Then it interpolates the remnant mass.
+*
+
+                    call nearest_remnant(MheTEST,MremTEST,
+     &              kstarTEST,sizedatatest,mt)
+
+*                   estimate for the fallback fraction
+                    fallback = remmass / mt
+                    kw=kresult
+                    mt=remmass
+                    mc = mt
+
                   endif
+
+
 
 * Specify the baryonic to gravitational remnant mass prescription
 * MJZ 04/2020
@@ -1383,3 +1635,162 @@ C      endif
       return
       end
 ***
+
+
+
+***
+* Subroutines for the Sukhbold+16 core collapse,
+* i.e. remnantflag = 5
+***
+      SUBROUTINE nearest_remnant(hecdata,remdata,
+     &                           kstardata,sizedata,hecmass)
+          implicit NONE
+*         Prescription for compact object domation
+*         by finding the nearest neighbor in by the He,core mass data
+*         Developer: Jaime Roman-Garza
+          real*8 hecdata(185),remdata(185)
+          integer kstardata(185)
+          real*8 hecmass,remmass,dinf,dsup,randnum1
+          integer indinf,indsup,sizedata,indnext,Cant
+          integer kresult
+          integer ii
+
+          COMMON /INDINFIMUM/ indinf
+          COMMON /INDSUPREMUM/ indsup
+          COMMON /AMOUNTOFTIMES/ Cant
+          COMMON /RANDNUM/ randnum1
+
+          COMMON /NEARREMNANT/ remmass,kresult
+
+
+*         Getting how many times hecmass value is in hecdata
+
+
+*         Getting the inf and sup indices
+          call findINF(hecdata,sizedata, hecmass)
+          call findSUP(hecdata,sizedata, hecmass)
+
+*         Considering the case that there is no infimum
+          if(indinf.eq.-1) then
+              kresult=kstardata(indsup)
+              if(kresult.eq.14) then
+                  remmass=hecmass
+              else if(kresult.eq.13) then
+                  remmass=remdata(indsup)
+              endif
+*         Considering the case that there is no supremum
+          else if(indsup.eq.-1) then
+              kresult=kstardata(indinf)
+              if(kresult.eq.14) then
+                  remmass=hecmass
+              else if(kresult.eq.13) then
+                  remmass=remdata(indinf)
+              endif
+*         Considering the case that we have both, infimum and supremum
+          else if ((indsup.ne.-1).and.(indinf.ne.-1)) then
+
+              dinf=abs(hecdata(indinf)-hecmass)
+              dsup=abs(hecdata(indsup)-hecmass)
+
+
+              if (dinf.le.dsup) then
+                  call findamount(hecdata,sizedata, hecdata(indinf))
+                  if(Cant.gt.1) then
+                      if(randnum1.lt.0.5) kresult=14
+                      if(randnum1.ge.0.5) kresult=13
+                  else
+                      kresult=kstardata(indinf)
+                  endif
+                  indnext=indinf
+              else
+                  call findamount(hecdata,sizedata, hecdata(indsup))
+                  if(Cant.gt.1) then
+                      if(randnum1.lt.0.5) kresult=14
+                      if(randnum1.ge.0.5) kresult=13
+                  else
+                      kresult=kstardata(indsup)
+                  endif
+                      indnext=indsup
+              endif
+
+
+              if (kresult.eq.14) remmass=hecmass
+              if (kresult.eq.13) remmass=remdata(indnext)
+
+          endif
+      END
+
+
+
+      SUBROUTINE findINF(Arr,sizedata, val)
+*         Function to find the infimum of an array of size "sizedata"
+*         Sfor a given value
+          implicit NONE
+
+          integer il
+          integer indinf,sizedata
+          real*8 Arr(185)
+          real*8 val
+
+          COMMON /INDINFIMUM/ indinf
+
+          indinf=-1
+          do il=1, sizedata
+              if (indinf.eq.-1) then
+                  if( Arr(il).lt.val ) then
+                      indinf=il
+                  endif
+              else
+                  if((Arr(il).lt.val).and.(Arr(indinf).lt.Arr(il))) then
+                      indinf=il
+                  endif
+              endif
+          enddo
+      END
+
+
+
+
+      SUBROUTINE findSUP(Arr,sizedata, val)
+*         Function to find the supremum of an array of size "sizedata"
+*         Sfor a given value
+          implicit NONE
+
+          integer ij
+          integer indsup,sizedata
+          real*8 Arr(185)
+          real*8 val
+
+          COMMON /INDSUPREMUM/ indsup
+
+          indsup=-1
+          do ij=1, sizedata
+              if (indsup.eq.-1) then
+                  if( Arr(ij).ge.val ) then
+                      indsup=ij
+                  endif
+              else
+                  if((Arr(ij).ge.val).and.(Arr(indsup).gt.Arr(ij))) then
+                      indsup=ij
+                  endif
+              endif
+          enddo
+      END
+
+
+      SUBROUTINE findamount(Arr,sizedata, val)
+*         Function to find how many time there is a value in an array
+          implicit NONE
+
+          integer ik
+          integer sizedata,Cant
+          real*8 Arr(185)
+          real*8 val
+
+          COMMON /AMOUNTOFTIMES/ Cant
+
+          Cant=0
+          do ik=1, sizedata
+              if(Arr(ik).eq.val) Cant=Cant+1
+          enddo
+      END
