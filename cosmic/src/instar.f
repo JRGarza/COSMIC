@@ -1,13 +1,13 @@
 ***
       SUBROUTINE instar
+      IMPLICIT NONE
+      INCLUDE 'const_bse.h'
 *
 *
 *       Initialization of collision matrix.
 *       ------------------------
 *
-      implicit none
-      integer i,j,ktype(0:14,0:14)
-      common /TYPES/ ktype
+      integer i,j
 *
 *       Initialize stellar collision matrix.
 *
@@ -31,7 +31,7 @@
          ktype(i,i) = i
  20   continue
       ktype(5,5) = 4
-      ktype(7,7) = 1
+      ktype(7,7) = 7
       ktype(10,10) = 15
       ktype(13,13) = 14
       do 25 , i = 2,5

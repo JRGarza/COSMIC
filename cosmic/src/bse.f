@@ -61,14 +61,14 @@
 * alpha1 is the common-envelope efficiency parameter (1.0).  
 * lambda is the binding energy factor for common envelope evolution (0.5).
 *
-* ceflag > 0 activates spin-energy correction in common-envelope (0). #defunct#
-* ceflag = 3 activates de Kool common-envelope model (0). 
+* ceflag = 0 activates spin-energy correction in common-envelope (0). 
+* ceflag = 1 activates de Kool common-envelope model (0). 
 * tflag > 0 activates tidal circularisation (1).
 * ifflag > 0 uses WD IFMR of HPE, 1995, MNRAS, 272, 800 (0). 
 * wdflag > 0 uses modified-Mestel cooling for WDs (0). 
 * bhflag > 0 allows velocity kick at BH formation (0). 
-* nsflag > 0 takes NS/BH mass from Belczynski et al. 2002, ApJ, 572, 407 (1). 
-* mxns is the maximum NS mass (1.8, nsflag=0; 3.0, nsflag=1). 
+* remnantflag > 0 takes NS/BH mass from Belczynski et al. 2002, ApJ, 572, 407 (1). 
+* mxns is the maximum NS mass (1.8, remnantflag=0; 3.0, remnantflag=1). 
 * idum is the random number seed used by the kick routine. 
 *
 * Next come the parameters that determine the timesteps chosen in each
@@ -94,7 +94,7 @@
       OPEN(22,file='binary.in', status='old')
       READ(22,*)mass0(1),mass0(2),tphysf,tb,kstar(1),kstar(2),z,ecc
       READ(22,*)neta,bwind,hewind,alpha1,lambda,windflag
-      READ(22,*)ceflag,tflag,ifflag,wdflag,bhflag,nsflag,mxns,idum
+      READ(22,*)ceflag,tflag,ifflag,wdflag,bhflag,remnantflag,mxns,idum
       READ(22,*)pts1,pts2,pts3
       READ(22,*)sigma,beta,xi,acc2,epsnov,eddfac,gamma
       if(kstar(1).lt.0.or.kstar(2).lt.0)then
