@@ -60,6 +60,7 @@
       external rzamsf,rtmsf,ralphf,rbetaf,rgammf,rhookf
       external rgbf,rminf,ragbf,rzahbf,rzhef,rhehgf,rhegbf,rpertf
       external mctmsf,mcgbtf,mcgbf,mcheif,mcagbf,lzahbf
+      
 *
 *
 *       ---------------------------------------------------------------------
@@ -585,7 +586,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.38d0
                      endif
                      if(mc.le.2.5d0)then
-                        fallback = 0.2d0 / (mt - mcx) 
+                        fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2d0
                         if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)mt=mt-0.2d0
                      elseif(mc.le.6.d0)then
@@ -630,7 +631,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.6d0
                      endif
                      if(mc.lt.2.5d0)then
-                        fallback = 0.2d0 / (mt - mcx) 
+                        fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2
                         fallback = 0.d0
                      elseif(mc.lt.3.5d0)then
@@ -670,7 +671,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      mrem = 6.6666667d0*(SQRT(1.d0+0.3d0*mt)-1.d0)
 * If rembar_massloss >= 0, limit the massloss by rembar_massloss
                      if(rembar_massloss.ge.0d0)then
-                        if((mt-mrem).ge.rembar_massloss) 
+                        if((mt-mrem).ge.rembar_massloss)
      &                               mrem = mt-rembar_massloss
                      endif
                   endif
@@ -686,7 +687,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 
 * Belczynski+2016 prescription: just shrink any BH with a He core mass
 * between 45 and 65 solar masses (provided the pisn flag is set at 45),
-* and blow up anything between 65 and 135 solar masses.  
+* and blow up anything between 65 and 135 solar masses.
 * Cheap, but effective
                      if(pisn.gt.0)then
                         if(mcbagb.ge.pisn.and.mcbagb.lt.65.d0)then
@@ -788,7 +789,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         endif
                      endif
 
-* Convert baryonic mass to gravitational mass 
+* Convert baryonic mass to gravitational mass
 * MJZ 04/2020
                      if(remnantflag.le.1)then
                         mrem = mt
@@ -1044,7 +1045,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      mrem = 6.6666667d0*(SQRT(1.d0+0.3d0*mt)-1.d0)
 * If rembar_massloss >= 0, limit the massloss by rembar_massloss
                      if(rembar_massloss.ge.0d0)then
-                        if((mt-mrem).ge.rembar_massloss) 
+                        if((mt-mrem).ge.rembar_massloss)
      &                               mrem = mt-rembar_massloss
                      endif
                   endif
@@ -1164,7 +1165,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      endif
 
 * MJZ 04/2020
-* Convert baryonic mass to gravitational mass 
+* Convert baryonic mass to gravitational mass
                      if(remnantflag.le.1)then
                         mrem = mt
                      else
