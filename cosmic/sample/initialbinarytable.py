@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) Scott Coughlin (2017 - 2019)
+# Copyright (C) Scott Coughlin (2017 - 2020)
 #
 # This file is part of cosmic.
 #
@@ -59,19 +59,12 @@ INITIAL_CONDITIONS_COLUMNS_CORE = ['kstar_1', 'kstar_2', 'mass_1', 'mass_2', 'po
 INITIAL_CONDITIONS_COLUMNS_EXTRAS = ['mass0_1', 'mass0_2',
                                      'rad_1', 'rad_2', 'lum_1', 'lum_2', 'massc_1', 'massc_2',
                                      'radc_1', 'radc_2', 'menv_1', 'menv_2', 'renv_1', 'renv_2',
-                                     'omega_spin_1', 'omega_spin_2', 'B0_1', 'B0_2', 'bacc_1', 'bacc_2',
+                                     'omega_spin_1', 'omega_spin_2', 'B_1', 'B_2', 'bacc_1', 'bacc_2',
                                      'tacc_1', 'tacc_2', 'epoch_1', 'epoch_2', 'tms_1', 'tms_2',
                                      'bhspin_1','bhspin_2', 'tphys']
 
-INITIAL_CONDITIONS_KICK_COLUMNS = ['explosion_1', 'vx_1', 'vy_1', 'vz_1',
-                             'explosion_2', 'vx_2', 'vy_2', 'vz_2',
-                             'explosion_2_1', 'vx_2_1', 'vy_2_1', 'vz_2_1', 'natal_kick_1',
-                             'natal_kick_2', 'vsys_1', 'vsys_2', 'vsys_total', 'delta_theta_1', 'delta_theta_2',
-                             'delta_theta_total']
-
 INITIAL_CONDITIONS_COLUMNS.extend(INITIAL_CONDITIONS_COLUMNS_CORE)
 INITIAL_CONDITIONS_COLUMNS.extend(INITIAL_CONDITIONS_COLUMNS_EXTRAS)
-INITIAL_CONDITIONS_COLUMNS.extend(INITIAL_CONDITIONS_KICK_COLUMNS)
 
 INITIAL_CONDITIONS_MISC_COLUMNS = ['binfrac']
 
@@ -149,8 +142,8 @@ class InitialBinaryTable():
         renv2 = kwargs.pop('renv_2', np.zeros(np.array(m1).size))
         ospin1 = kwargs.pop('ospin_1', np.zeros(np.array(m1).size))
         ospin2 = kwargs.pop('ospin_2', np.zeros(np.array(m1).size))
-        b_0_1 = kwargs.pop('B0_1', np.zeros(np.array(m1).size))
-        b_0_2 = kwargs.pop('B0_2', np.zeros(np.array(m1).size))
+        b_0_1 = kwargs.pop('B_1', np.zeros(np.array(m1).size))
+        b_0_2 = kwargs.pop('B_2', np.zeros(np.array(m1).size))
         bacc1 = kwargs.pop('bacc_1', np.zeros(np.array(m1).size))
         bacc2 = kwargs.pop('bacc_2', np.zeros(np.array(m1).size))
         tacc1 = kwargs.pop('tacc_1', np.zeros(np.array(m1).size))
@@ -161,26 +154,6 @@ class InitialBinaryTable():
         tms2 = kwargs.pop('tms_2', np.zeros(np.array(m1).size))
         bhspin1 = kwargs.pop('bhspin_1', np.zeros(np.array(m1).size))
         bhspin2 = kwargs.pop('bhspin_2', np.zeros(np.array(m1).size))
-        explosion_1 = kwargs.pop('explosion_1', np.zeros(np.array(m1).size))
-        vx_1 = kwargs.pop('vx_1', np.zeros(np.array(m1).size))
-        vy_1 = kwargs.pop('vy_1', np.zeros(np.array(m1).size))
-        vz_1 = kwargs.pop('vz_1', np.zeros(np.array(m1).size))
-        explosion_2 = kwargs.pop('explosion_2', np.zeros(np.array(m1).size))
-        vx_2 = kwargs.pop('vx_2', np.zeros(np.array(m1).size))
-        vy_2 = kwargs.pop('vy_2', np.zeros(np.array(m1).size))
-        vz_2 = kwargs.pop('vz_2', np.zeros(np.array(m1).size))
-        explosion_2_1 = kwargs.pop('explosion_2_1', np.zeros(np.array(m1).size))
-        vx_2_1 = kwargs.pop('vx_2_1', np.zeros(np.array(m1).size))
-        vy_2_1 = kwargs.pop('vy_2_1', np.zeros(np.array(m1).size))
-        vz_2_1 = kwargs.pop('vz_2_1', np.zeros(np.array(m1).size))
-        natal_kick_1 = kwargs.pop('natal_kick_1', np.zeros(np.array(m1).size))
-        natal_kick_2 = kwargs.pop('natal_kick_2', np.zeros(np.array(m1).size))
-        vsys_1 = kwargs.pop('vsys_1', np.zeros(np.array(m1).size))
-        vsys_2 = kwargs.pop('vsys_2', np.zeros(np.array(m1).size))
-        vsys_total = kwargs.pop('vsys_total', np.zeros(np.array(m1).size))
-        delta_theta_1 = kwargs.pop('delta_theta_1', np.zeros(np.array(m1).size))
-        delta_theta_2 = kwargs.pop('delta_theta_2', np.zeros(np.array(m1).size))
-        delta_theta_total = kwargs.pop('delta_theta_total', np.zeros(np.array(m1).size))
         tphys = kwargs.pop('tphys', np.zeros(np.array(m1).size))
 
         bin_dat = pd.DataFrame(np.vstack([
@@ -193,11 +166,6 @@ class InitialBinaryTable():
                                             ospin1, ospin2, b_0_1, b_0_2, bacc1, bacc2,
                                             tacc1, tacc2, epoch1, epoch2, tms1, tms2,
                                             bhspin1, bhspin2, tphys,
-                                            explosion_1, vx_1, vy_1, vz_1,
-                                            explosion_2, vx_2, vy_2, vz_2,
-                                            explosion_2_1, vx_2_1, vy_2_1, vz_2_1,
-                                            natal_kick_1, natal_kick_2, vsys_1, vsys_2,
-                                            vsys_total, delta_theta_1, delta_theta_2, delta_theta_total,
                                             binfrac
                                           ]).T,
                                columns = INITIAL_CONDITIONS_COLUMNS_ALL)
