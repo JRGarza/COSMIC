@@ -4,7 +4,7 @@
 __author__ = 'Katie Breivik <katie.breivik@gmail.com>'
 
 import os
-import unittest2
+import unittest
 import numpy as np
 import pandas as pd
 from cosmic.sample.sampler.independent import Sample
@@ -78,7 +78,7 @@ def linear_fit(data):
 
     return slope
 
-class TestSample(unittest2.TestCase):
+class TestSample(unittest.TestCase):
     """`TestCase` for the cosmic Sample class, which generates several
         independent initial parameters drawn from specified distributions
     """
@@ -175,6 +175,11 @@ class TestSample(unittest2.TestCase):
         ecc = SAMPLECLASS.sample_ecc(ecc_model='sana12', size=1000000)
         power_slope = power_law_fit(ecc)
         self.assertEqual(np.round(power_slope, 2), SANA12_ECC_POWER_LAW)
+
+        np.random.seed(4)
+        # Check that the sample_ecc function samples ecc properly
+        ecc = SAMPLECLASS.sample_ecc(ecc_model='circular', size=1000000)
+        self.assertEqual(np.mean(ecc), 0.0)
 
     def test_sample_porb(self):
         # next do Sana12

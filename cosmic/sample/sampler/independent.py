@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) Katelyn Breivik (2017 - 2019)
+# Copyright (C) Katelyn Breivik (2017 - 2020)
 #
 # This file is part of cosmic.
 #
@@ -339,7 +339,7 @@ class Sample(object):
             eccentricity
         model : string
             selects which model to sample orbital periods, choices include:
-            log_uniform : semi-major axis flat in log space from RROL < 0.5 up
+            log_uniform : semi-major axis flat in log space from RRLO < 0.5 up
                        to 1e5 Rsun according to
                        `Abt (1983) <http://adsabs.harvard.edu/abs/1983ARA%26A..21..343A>`_
                         and consistent with Dominik+2012,2013
@@ -420,7 +420,7 @@ class Sample(object):
         return porb
 
 
-    def sample_ecc(self, ecc_model='thermal', size=None):
+    def sample_ecc(self, ecc_model='sana12', size=None):
         """Sample the eccentricity according to a user specified model
 
         Parameters
@@ -430,6 +430,7 @@ class Sample(object):
             `Heggie (1975) <http://adsabs.harvard.edu/abs/1975MNRAS.173..729H>`_
             'uniform' samples from a uniform eccentricity distribution
             'sana12' samples from the eccentricity distribution from `Sana+2012 <https://ui.adsabs.harvard.edu/abs/2012Sci...337..444S/abstract>_`
+            'circular' assumes zero eccentricity for all systems
             DEFAULT = 'sana12'
 
         size : int, optional
@@ -455,8 +456,13 @@ class Sample(object):
             from cosmic.utils import rndm
             ecc = rndm(a=0.001, b=0.9, g=-0.45, size=size) 
             return ecc
+
+        elif ecc_model=='circular':
+            ecc = np.zeros(size)
+            return ecc
+
         else:
-            raise Error('You have specified an unsupported model. Please choose from thermal, uniform, or sana12')
+            raise Error('You have specified an unsupported model. Please choose from thermal, uniform, sana12, or circular')
 
 
     def sample_SFH(self, SF_start=13700.0, SF_duration=0.0, met=0.02, size=None):

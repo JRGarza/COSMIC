@@ -489,6 +489,9 @@ common envelope occurs regardless of the choices below:
                             for GB/AGB stars
 
                             ``4`` : follows `Section 5.1 of Belcyznski+2008 <https://ui.adsabs.harvard.edu/abs/2008ApJS..174..223B/abstract>`_ except for WD donors which follow BSE
+
+                            ``5`` : follows `Section 2.3 of Neijssel+2020 <https://ui.adsabs.harvard.edu/abs/2019MNRAS.490.3740N/abstract>`_
+                        Mass transfer from stripped stars is always assumed to be dynamically stable
                          **qcflag = 1**
 
 ``qcrit_array``          Array with length: 16 for user-input values for the 
@@ -550,6 +553,8 @@ common envelope occurs regardless of the choices below:
     ; 1: BSE but with Hjellming & Webbink, 1987, ApJ, 318, 794 GB/AGB stars
     ; 2: following binary_c from Claeys+2014 Table 2
     ; 3: following binary_c from Claeys+2014 Table 2 but with Hjellming & Webbink, 1987, ApJ, 318, 794 GB/AGB stars
+    ; 4: following StarTrack from Belczynski+2008 Section 5.1. WD donors follow standard BSE
+    ; 5: following COMPAS from Neijssel+2020 Section 2.3. Stripped stars are always dynamically stable
     ; default=3
     qcflag=3
 
@@ -561,8 +566,32 @@ common envelope occurs regardless of the choices below:
 .. note::
 
     KICK FLAGS
-
 =======================  =====================================================
+``kickflag``             Sets the particular natal kick prescription to use
+                         Note that ``sigmadiv``, ``bhflag``, ``bhsigmafrac``, 
+                         ``aic``, and ``ussn``, which are described below, are
+                         only used when ``kickflag=0``            
+
+                            ``0`` : The standard COSMIC kick prescription, where
+                            kicks are drawn from a bimodal distribution with 
+                            standard FeCCSN getting a kick drawn from a Maxwellian
+                            distribution with dispersion parameter ``sigma`` and ECSN 
+                            are drawn according to ``sigmadiv``. This setting has 
+                            additional possible options for ``bhflag``, ``bhsigmafrac``, 
+                            ``aic`` and ``ussn``.
+
+                            ``-1`` : Natal kicks are drawn according to ``sigma`` and 
+                            scaled by the ejecta mass and remnant mass following Eq. 1 of 
+                            `Giacobbo & Mapelli 2020 <https://ui.adsabs.harvard.edu/abs/2020ApJ...891..141G/abstract>`_
+
+                            ``-2`` : Natal kicks are drawn according to ``sigma`` and 
+                            scaled by just the ejecta mass following Eq. 2 of 
+                            `Giacobbo & Mapelli 2020 <https://ui.adsabs.harvard.edu/abs/2020ApJ...891..141G/abstract>`_
+
+                            ``-3`` : Natal kicks are drawn according to Eq. 1 of 
+                            `Bray & Eldridge 2016 <https://ui.adsabs.harvard.edu/abs/2016MNRAS.461.3747B/abstract>`_
+
+                         **default=0**
 ``sigma``                Sets the dispersion in the Maxwellian for the 
                          SN kick velocity in km/s
 
@@ -662,26 +691,30 @@ common envelope occurs regardless of the choices below:
                             ``values between [0, 90]`` : sets opening angle for SN kick
 
                          **polar_kick_angle = 90.0**
-``natal_kick_array``     Array of lenght: 6 which takes user input values to fix
-                         the SN natal kick, where the array is 
-                         formatted as: [vk1, vk2, phi1, phi2, theta1, theta2].
+``natal_kick_array``     Array of dimensions: (2,5) which takes user input values
+                         for the SN natal kick, where the first row corresponds to the 
+                         first star and the second row corresponds to the second star and
+                         columns are: [vk, phi, theta, eccentric_anomaly, rand_seed].
                          NOTE: any numbers outside these ranges will be sampled
                          in the standard ways detailed above.
 
-                            ``vk1, vk2`` : valid on the range [0, inf] 
+                            ``vk`` : valid on the range [0, inf] 
 
-                            ``phi1, phi2`` : co-lateral polar angles valid from 
+                            ``phi`` : co-lateral polar angle in degrees, valid from 
                             [-90, 90]
 
-                            ``theta1, theta2`` : azimuthal angles valid from 
+                            ``theta`` : azimuthal angle in degrees, valid from 
                             [0, 360]
 
-                            ``eccentric_anomaly_1, eccentric_anomaly_2`` : eccentric_anomaly angles
+                            ``eccentric_anomaly`` : eccentric anomaly in degreed, 
                             valid from [0, 360]
 
+                            ``rand_seed`` : supplied if restarting evolution after
+                            a supernova has already occurred
 
 
-                         **natal_kick_array = [-100.0,-100.0,-100.0,-100.0,-100.0,-100.0,-100.0,-100.0]**
+
+                         **natal_kick_array = [[-100.0,-100.0,-100.0,-100.0,0.0][-100.0,-100.0,-100.0,-100.0,0.0]]**
 =======================  =====================================================
 
 .. code-block:: ini
@@ -689,6 +722,19 @@ common envelope occurs regardless of the choices below:
     ;;;;;;;;;;;;;;;;;;
     ;;; KICK FLAGS ;;;
     ;;;;;;;;;;;;;;;;;;
+
+    ; kickflag sets the particular kick prescription to use
+    ; kickflag=0 uses the standard kick prescription, where kicks are drawn from a bimodal
+    ; distribution based on whether they go through FeCCSN or ECSN/USSN
+    ; kickflag=-1 uses the prescription from Giacobbo & Mapelli 2020 (Eq. 1)
+    ; with their default parameters (<m_ns>=1.2 Msun, <m_ej>=9 Msun)
+    ; kickflag=-2 uses the prescription from Giacobbo & Mapelli 2020 (Eq. 2),
+    ; which does not scale the kick by <m_ns>
+    ; kickflag=-3 uses the prescription from Bray & Eldridge 2016 (Eq. 1)
+    ; with their default parameters (alpha=70 km/s, beta=120 km/s)
+    ; Note: sigmadiv, bhflag, bhsigmafrac, aic, and ussn are only used when kickflag=0
+    ; default = 0
+    kickflag = 0
 
     ; sigma sets is the dispersion in the Maxwellian for the SN kick velocity in km/s
     ; default=265.0
@@ -742,21 +788,20 @@ common envelope occurs regardless of the choices below:
     ; default=90.0
     polar_kick_angle = 90.0
 
-    ; natal_kick_array is a 8-length array for user-input values for the SN natal kick
-    ; formatted as: (vk1, vk2, phi1, phi2, theta1, theta2, eccentric_anomaly_1, eccentric_anomaly_2)
-    ; vk is valid on the range [0, inf], phi are the co-lateral polar angles valid from [-90.0, 90.0], theta are azimuthal angles [0, 360],
-    ; and eccentric_anomaly are angles [0, 360]
+    ; natal_kick_array is a (2,5) array for user-input values for the SN natal kick
+    ; The first and second row specify the natal kick information for the first and second star, and columns are formatted as: (vk, phi, theta, eccentric anomaly, rand_seed)
+    ; vk is valid on the range [0, inf], phi are the co-lateral polar angles (in degrees) valid from [-90.0, 90.0], theta are azimuthal angles (in degrees) valid from [0, 360], and eccentric anomaly are the eccentric anomaly of the orbit at the time of SN (in degrees) valid from [0, 360]
     ; any number outside of these ranges will be sampled in the standard way in kick.f
-    ; default=[-100.0,-100.0,-100.0,-100.0,-100.0,-100.0,-100.0,-100.0]
-    natal_kick_array=[-100.0,-100.0,-100.0,-100.0,-100.0,-100.0,-100.0,-100.0]
+    ; rand_seed is for reproducing a supernova if the the system is started mid-evolution, set to 0 if starting binary from the beginning
+    ; default=[[-100.0,-100.0,-100.0,-100.0,0],[-100.0,-100.0,-100.0,-100.0,0.0]]
+    natal_kick_array=[[-100.0,-100.0,-100.0,-100.0,0],[-100.0,-100.0,-100.0,-100.0,0.0]]
 
 .. note::
 
     REMNANT MASS FLAGS
 
-=======================  =====================================================
-``remnantflag``               Determines the remnant mass prescription used for
-                         NSs and BHs.
+===================  =====================================================
+``remnantflag``      Determines the remnant mass prescription used for NSs and BHs.
 
                             ``0`` : follows `Section 6 of Hurley+2000 <https://ui.adsabs.harvard.edu/abs/2000MNRAS.315..543H/abstract>`_
                             (default BSE)
@@ -765,26 +810,27 @@ common envelope occurs regardless of the choices below:
 
                             ``2`` : follows `Belczynski+2008 <https://ui.adsabs.harvard.edu/abs/2008ApJS..174..223B/abstract>`_
 
-                            ``3`` : follows the rapid prescription from `Fryer+2012 <https://ui.adsabs.harvard.edu/abs/2012ApJ...749...91F/abstract>`_
+                            ``3`` : follows the rapid prescription from `Fryer+2012 <https://ui.adsabs.harvard.edu/abs/2012ApJ...749...91F/abstract>`_, with updated proto-core mass from `Giacobbo & Mapelli 2020 <https://ui.adsabs.harvard.edu/abs/2020ApJ...891..141G/abstract>`_
 
                             ``4`` : delayed prescription from `Fryer+2012 <https://ui.adsabs.harvard.edu/abs/2012ApJ...749...91F/abstract>`_
 
                          **remnantflag = 3**
-``mxns``                 Sets the boundary between the maximum NS mass
-                         and the minimum BH mass
+
+``mxns``             Sets the boundary between the maximum NS mass
+                     and the minimum BH mass
 
                             ``positive values`` : sets the NS/BH mass bounary
 
                          **mxns = 2.5**
 
-``rembar_massloss``      Determines the prescriptions for mass conversion from
-                         baryonic to gravitational mass during the collapse of 
-                         the proto-compact object
+``rembar_massloss``  Determines the prescriptions for mass conversion from
+                     baryonic to gravitational mass during the collapse of 
+                     the proto-compact object
 
                             ``positive values`` : sets the maximum amount of mass loss, which should be about 10% of the maximum mass of an iron core (:math:`{\sim 5 \mathrm{M}_\odot}` Fryer, private communication)
 
                             ``-1 < *rembar_massloss* < 0`` : assumes that proto-compact objects lose a constant fraction of their baryonic mass when collapsing to a black hole (e.g., *rembar_massloss* = -0.1 gives the black hole a gravitational mass that is 90% of the proto-compact object's baryonic mass)
-
+===================  =====================================================
 
 .. code-block:: ini
 
@@ -793,8 +839,10 @@ common envelope occurs regardless of the choices below:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ; remnantflag determines the remnant mass prescription used
-    ; remnantflag=0: default BSE; remnantflag=1: Belczynski et al. 2002, ApJ, 572, 407
-    ; remnantflag=2: Belczynski et al. 2008; remnantflag=3: rapid prescription (Fryer+ 2012)
+    ; remnantflag=0: default BSE
+    ; remnantflag=1: Belczynski et al. 2002, ApJ, 572, 407
+    ; remnantflag=2: Belczynski et al. 2008
+    ; remnantflag=3: rapid prescription (Fryer+ 2012), updated as in Giacobbo & Mapelli 2020 
     ; remnantflag=4: delayed prescription (Fryer+ 2012)
     ; default=3
     remnantflag=3

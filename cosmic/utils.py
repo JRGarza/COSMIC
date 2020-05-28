@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright (C) Scott Coughlin (2017 - 2019)
+# Copyright (C) Scott Coughlin (2017 - 2020)
 #
 # This file is part of cosmic.
 #
@@ -242,7 +242,7 @@ def conv_select(bcm_save, bpp_save, final_kstar_1, final_kstar_2, method, conv_l
         # select out systems when they first enter RLO after the 1st SN
         conv_xrb = conv_sn.loc[(conv_sn.kstar_1.isin(final_kstar_1)) &\
                                (conv_sn.kstar_2.isin(final_kstar_2)) &\
-                               (conv_sn.RROL_2 >= 1.0) &\
+                               (conv_sn.RRLO_2 >= 1.0) &\
                                (conv_sn.sep > 0)]
         conv_save = conv_xrb.groupby('bin_num').first().reset_index()
 
@@ -254,7 +254,7 @@ def conv_select(bcm_save, bpp_save, final_kstar_1, final_kstar_2, method, conv_l
             conv_save = conv_save.loc[conv_save[key] > filter_lo]
     return conv_save
 
-def pop_write(dat_store, log_file, mass_list, number_list, bcm, bpp, initC, conv, bin_state_nums, match, idx):
+def pop_write(dat_store, log_file, mass_list, number_list, bcm, bpp, initC, conv, kick_info, bin_state_nums, match, idx):
     """Writes all the good stuff that you want to save from runFixedPop in a
        single function
 
@@ -284,6 +284,9 @@ def pop_write(dat_store, log_file, mass_list, number_list, bcm, bpp, initC, conv
 
     conv : `pandas.DataFrame`
         conv array to write
+
+    kick_info : `pandas.DataFrame`
+        kick_info array to write
 
     bin_state_nums : `list`
         contains the count of binstates 0,1,2
@@ -320,6 +323,9 @@ def pop_write(dat_store, log_file, mass_list, number_list, bcm, bpp, initC, conv
 
     # Save the converging dataframe
     dat_store.append('conv', conv)
+
+    # Save the converging dataframe
+    dat_store.append('kick_info', kick_info)
 
     # Save number of systems in each bin state
     dat_store.append('bin_state_nums', bin_state_nums)
@@ -731,6 +737,11 @@ def error_check(BSEDict, filters=None, convergence=None, sampling=None):
         if BSEDict[flag] <= 0:
             raise ValueError("'{0:s}' needs to be greater than 0 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
 
+    flag='zsun'
+    if flag in BSEDict.keys():
+        if BSEDict[flag] <= 0:
+            raise ValueError("'{0:s}' needs to be greater than 0 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
+
     flag='windflag'
     if flag in BSEDict.keys():
         if BSEDict[flag] not in [0,1,2,3]:
@@ -786,8 +797,8 @@ def error_check(BSEDict, filters=None, convergence=None, sampling=None):
             raise ValueError("'{0:s}' needs to be set to either 0, 1, or 2 (you set it to '{1:d}')".format(flag,BSEDict[flag]))
     flag='qcflag'
     if flag in BSEDict.keys():
-        if BSEDict[flag] not in [0,1,2,3,4]:
-            raise ValueError("'{0:s}' needs to be set to 0, 1, 2, 3 or 4(you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
+        if BSEDict[flag] not in [0,1,2,3,4,5]:
+            raise ValueError("'{0:s}' needs to be set to 0, 1, 2, 3, 4, or 5 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
 
     flag='qcrit_array'
     if flag in BSEDict.keys():
@@ -796,6 +807,10 @@ def error_check(BSEDict, filters=None, convergence=None, sampling=None):
         if len(BSEDict[flag]) != 16:
             raise ValueError("'{0:s}' must be supplied 16 values (you supplied '{1:d}')".format(flag, len(BSEDict[flag])))
 
+    flag='kickflag'
+    if flag in BSEDict.keys():
+        if BSEDict[flag] not in [0,-1,-2,-3]:
+            raise ValueError("'{0:s}' needs to be set to either 0, -1, -2, or -3 (you set it to '{1:d}')".format(flag,BSEDict[flag]))
     flag='sigma'
     if flag in BSEDict.keys():
         if BSEDict[flag] < 0:
@@ -838,8 +853,8 @@ def error_check(BSEDict, filters=None, convergence=None, sampling=None):
             raise ValueError("'{0:s}' needs to be within the allowed range of [0,90] (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
     flag='natal_kick_array'
     if flag in BSEDict.keys():
-        if len(BSEDict[flag]) != 8:
-            raise ValueError("'{0:s}' must be supplied 8 values (you supplied '{1:d}')".format(flag, len(BSEDict[flag])))
+        if np.array(BSEDict[flag]).shape != (2,5):
+            raise ValueError("'{0:s}' must have shape (2,5) (you supplied list, or array with shape '{1}')".format(flag, np.array(BSEDict[flag]).shape))
 
     flag='remnantflag'
     if flag in BSEDict.keys():
@@ -888,9 +903,13 @@ def error_check(BSEDict, filters=None, convergence=None, sampling=None):
         if (BSEDict[flag] < 0) or (BSEDict[flag] > 1):
             raise ValueError("'{0:s}' needs to be between 0 and 1 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
     flag='bconst'
-    # --- all numbers are valid
+    if flag in BSEDict.keys():
+        if (BSEDict[flag] <= 0):
+            raise ValueError("'{0:s}' needs to be greater than 0 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
     flag='ck'
-    # --- all numbers are valid
+    if flag in BSEDict.keys():
+        if (BSEDict[flag] <= 0):
+            raise ValueError("'{0:s}' needs to be greater than 0 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
 
     flag='fprimc_array'
     if flag in BSEDict.keys():
