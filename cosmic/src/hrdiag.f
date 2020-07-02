@@ -1267,6 +1267,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                          endif
                      endif
                      mc = mt
+                  elseif(remnantflag.eq.5)then
 *
 * Use the results from Sukhbold+16, N20 engine, as the
 *core collapse SN prescription. It assigns the remnant
