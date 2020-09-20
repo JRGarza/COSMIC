@@ -57,6 +57,9 @@
       REAL*8 KW1_TEMP, KW2_TEMP
       REAL*8 rad(2),tms(2),lumin(2),B_0(2),bacc(2),tacc(2),epoch(2)
       REAL*8 menv_bpp(2),renv_bpp(2)
+
+      REAL*8 ecsntauris15
+      COMMON /ECSNTAURIS/ ecsntauris15
 *
 * Initialize
 *
@@ -230,7 +233,8 @@
                   elseif(KW1i.ge.7.and.KW1i.le.9)then
                      if((ecsn.gt.0.d0.and.M1i.gt.ecsn_mlow.and.
      &                  M1i.le.ecsn).or.
-     &                  (ecsn.eq.-1.d0.and.ecsntauris15.eq.1.d0))then
+     &                  (ecsn.eq.-1.d0.and.ecsntauris15
+     &                  .eq.1.d0))then
 * BSE orgi: 1.6-2.25, Pod: 1.4-2.5, StarTrack: 1.83-2.25 (all in Msun)
                         if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then
                            sigma = -sigmahold/sigmadiv
@@ -935,8 +939,8 @@
                      formation1 = 2
                   endif
                elseif(KW1i.ge.7.and.KW1i.le.9)then
-                  if((ecsn.gt.0.d0.and.M1i.gt.ecsn_mlow.and.M1i.le.ecsn).or.
-     &              (ecsn.eq.-1.d0.and.ecsntauris15.eq.1.d0))then
+                  if((ecsn.gt.0.d0.and.M1i.gt.ecsn_mlow.and.M1i.le.ecsn)
+     &              .or.(ecsn.eq.-1.d0.and.ecsntauris15.eq.1.d0))then
 * BSE orgi: 1.6-2.25, Pod: 1.4-2.5, StarTrack: 1.83-2.25 (all in Msun)
                      if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then
                         sigma = -sigmahold/sigmadiv

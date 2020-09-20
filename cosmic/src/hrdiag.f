@@ -694,8 +694,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                   kw = 11
               elseif(((ecsn.gt.0.d0.and.mcbagb.ge.ecsn_mlow.and.
      &               mcbagb.le.ecsn).or.
-     &               (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0)).and.
-     &               mc.lt.1.08d0)then
+     &               (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))
+     &               .and.mc.lt.1.08d0)then
                   kw = 11
 *               elseif(mcbagb.ge.1.6d0.and.mcbagb.le.2.5d0.and.
 *                      mc.lt.1.08d0)then !can introduce this into code at some point.
@@ -1137,7 +1137,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                mc = mcmax
                if(mc.lt.mch)then
                   if((ecsn.gt.0.d0.and.mass.lt.ecsn_mlow).or.
-     &              (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))then
+     &              (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.
+     &              mc.lt.1.43d0))then
                      mt = MAX(mc,(mc+0.31d0)/1.45d0)
                      kw = 11
                   elseif(ecsn.eq.0.d0.and.mass.lt.1.6d0)then
@@ -1148,8 +1149,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      kw = 11
                  elseif(((ecsn.gt.0.d0.and.mass.gt.ecsn_mlow.and.
      &               mass.le.ecsn).or.
-     &               (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0)).and.
-                     mc.le.1.08d0)then
+     &               (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))
+     &               .and.mc.le.1.08d0)then
                          mt = MAX(mc,(mc+0.31d0)/1.45d0)
                          kw = 11
                   else
@@ -1162,7 +1163,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                   mass = mt
                else
                   if((ecsn.gt.0.d0.and.mass.lt.ecsn_mlow).or.
-     &              (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))then
+     &              (ecsn.eq.-1.d0.and.mc.gt.1.37d0
+     &              .and.mc.lt.1.43d0))then
                      kw = 15
                      aj = 0.d0
                      mt = 0.d0

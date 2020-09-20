@@ -825,7 +825,7 @@ def error_check(BSEDict, filters=None, convergence=None, sampling=None):
             raise ValueError("'{0:s}' needs to be greater or equal to 0 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
     flag='ecsn_mlow'
     if flag in BSEDict.keys():
-        if (BSEDict[flag]>BSEDict['ecsn']) or (BSEDict[flag]<0.0):
+        if ((BSEDict[flag]>BSEDict['ecsn'])and(BSEDict['ecsn'] > 0)) or (BSEDict[flag]<0.0):
             raise ValueError("'{0:s}' needs to be less than 'ecsn', and must be greater than or equal to 0 (you set it to '{0:0.2f}')".format(flag, BSEDict[flag]))
     flag='sigmadiv'
     if flag in BSEDict.keys():

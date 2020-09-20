@@ -216,6 +216,8 @@
       REAL*8 qc_fixed
       LOGICAL switchedCE,disrupt
 
+      real*8 ecsntauris15
+
       COMMON /ECSNTAURIS/ ecsntauris15
 
 
