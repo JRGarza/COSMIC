@@ -807,10 +807,12 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.38d0
                         ecsntauris15 = 1.d0
                      endif
+
                      if(mc.le.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2d0
-                        if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)mt=mt-0.2d0
+                        if((ecsn.gt.0.d0.and.mcbagb.le.ecsn).or.
+     &                  (ecsntauris15.eq.1.d0))mt=mt-0.2d0
                      elseif(mc.le.6.d0)then
                         fallback = (0.286d0*mc - 0.514d0) / (mt - mcx)
                         mt = mcx + 0.286d0*mc - 0.514d0
@@ -852,10 +854,20 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      elseif(mc.gt.11.d0)then
                         mcx = 1.6d0
                      endif
+
+                     if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
+                        mcx = 1.38d0
+                     elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then !this should be ecsn, unless ecsn=0
+                        mcx = 1.38d0
+                     elseif(ecsn.eq.-1.d0.and.(mc.ge.1.37.and.mc.le.1.43))then
+                        mcx = 1.38d0
+                        ecsntauris15 = 1.d0
+                     endif
+
+
                      if(mc.lt.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2
-                        fallback = 0.d0
                      elseif(mc.lt.3.5d0)then
                         fallback = (0.5d0 * mc - 1.05d0) / (mt - mcx)
                         mt = mcx + 0.5d0 * mc - 1.05d0
@@ -1201,12 +1213,15 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      elseif(ecsn.eq.0.d0.and.mc.le.2.25d0)then !this should be ecsn, unless ecsn=0
                         mcx = 1.38d0
                      elseif(ecsn.eq.-1.d0.and.(mc.ge.1.37.and.mc.le.1.43))then
-                       mcx = 1.38d0
-                       ecsntauris15 = 1.d0
+                        mcx = 1.38d0
+                        ecsntauris15 = 1.d0
                      endif
+
                      if(mc.le.2.5d0)then
+                        fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2d0
-                        fallback = 0.d0
+                        if((ecsn.gt.0.d0.and.mc.le.ecsn).or.
+     &                  (ecsntauris15.eq.1.d0))mt=mt-0.2d0
                      elseif(mc.le.6.d0)then
                         fallback = (0.286d0*mc - 0.514d0) / (mt - mcx)
                         mt = mcx + 0.286d0*mc - 0.514d0
@@ -1248,9 +1263,21 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      elseif(mc.gt.11.d0)then
                         mcx = 1.6d0
                      endif
+
+
+                     if(ecsn.gt.0.d0.and.mc.le.ecsn)then
+                        mcx = 1.38d0
+                    elseif(ecsn.eq.0.d0.and.mc.le.2.25d0)then !this should be ecsn, unless ecsn=0
+                        mcx = 1.38d0
+                     elseif(ecsn.eq.-1.d0.and.(mc.ge.1.37.and.mc.le.1.43))then
+                        mcx = 1.38d0
+                        ecsntauris15 = 1.d0
+                     endif
+
+
                      if(mc.lt.2.5d0)then
+                        fallback = 0.2d0 / (mt - mcx)
                         mt = mcx + 0.2
-                        fallback = 0.d0
                      elseif(mc.lt.3.5d0)then
                         fallback = (0.5d0 * mc - 1.05d0) / (mt - mcx)
                         mt = mcx + 0.5d0 * mc - 1.05d0
