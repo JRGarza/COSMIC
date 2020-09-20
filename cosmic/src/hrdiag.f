@@ -73,12 +73,14 @@
       character(len=99) file_name
       real*8 minmass, maxmass,deltamass,masst
 
-
+      real*8 ecsntauris15
 
       COMMON /INDINFIMUM/ indinf
       COMMON /INDSUPREMUM/ indsup
       COMMON /NEARREMNANT/ remmass,kresult
       COMMON /RANDNUM/ randnum1
+*     Label for ecsn given the Mco limits on Tauris+15
+      COMMON /ECSNTAURIS/ ecsntauris15
 
       sizedatatest=185
 
@@ -276,6 +278,7 @@
      & 14,14,14,14,
      & 14,14,14,14,14/
 
+      ecsntauris15 = 0.d0
 
 *
 *
@@ -800,6 +803,9 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.38d0
                      elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then !this should be ecsn, unless ecsn=0
                         mcx = 1.38d0
+                     elseif(ecsn.eq.-1.d0.and.(mc.ge.1.37.and.mc.le.1.43))then
+                        mcx = 1.38d0
+                        ecsntauris15 = 1.d0
                      endif
                      if(mc.le.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx)
@@ -1194,6 +1200,9 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.38d0
                      elseif(ecsn.eq.0.d0.and.mc.le.2.25d0)then !this should be ecsn, unless ecsn=0
                         mcx = 1.38d0
+                     elseif(ecsn.eq.-1.d0.and.(mc.ge.1.37.and.mc.le.1.43))then
+                       mcx = 1.38d0
+                       ecsntauris15 = 1.d0
                      endif
                      if(mc.le.2.5d0)then
                         mt = mcx + 0.2d0
