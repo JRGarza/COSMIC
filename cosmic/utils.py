@@ -821,7 +821,7 @@ def error_check(BSEDict, filters=None, convergence=None, sampling=None):
             raise ValueError("'{0:s}' needs to be set to either 0, 1, 2, or 3 (you set it to '{1:d}')".format(flag,BSEDict[flag]))
     flag='ecsn'
     if flag in BSEDict.keys():
-        if BSEDict[flag] < 0:
+        if not((BSEDict[flag] > 0)or(BSEDict[flag] == -1)):
             raise ValueError("'{0:s}' needs to be greater or equal to 0 (you set it to '{1:0.2f}')".format(flag, BSEDict[flag]))
     flag='ecsn_mlow'
     if flag in BSEDict.keys():
