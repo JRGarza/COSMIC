@@ -3274,6 +3274,7 @@ component.
             dms(k) = mass(k) - mt
             if(formation(k).ne.11) formation(k) = 1
             if(kw.eq.13.and.(ecsn.gt.0.d0.or.ecsn.eq.-1.d0))then
+               ! implement the tauris ecsn for H stars
                if(kstar(k).le.6)then
                   if(mass0(k).le.zpars(5))then
                      if(sigma.gt.0.d0.and.sigmadiv.gt.0.d0)then

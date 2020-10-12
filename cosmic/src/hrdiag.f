@@ -280,6 +280,8 @@
 
       ecsntauris15 = 0.d0
 
+
+
 *
 *
 *       ---------------------------------------------------------------------
@@ -300,8 +302,10 @@
 *
 *
 * Make evolutionary changes to stars that have not reached KW > 5.
+      !OPEN(61,file="test_tauris_1.dat",action='write',status='replace')
 *
       mch = 1.44d0 !set here owing to AIC ECSN model.
+      if(ecsn.eq.-1.d0) mch = 1.37d0
 *
       mass0 = mass
 C      if(mass0.gt.100.d0) mass = 100.d0
@@ -685,7 +689,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *
                mt = mc
                if((ecsn.gt.0.d0.and.mcbagb.lt.ecsn_mlow).or.
-     &          (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))then
+     &          (ecsn.eq.-1.d0.and.mc.lt.1.37d0))then
                   kw = 11
                elseif(ecsn.eq.0.d0.and.mcbagb.lt.1.6d0)then !double check what this should be. should be ecsn_mlow. Remember need to add option if ecsn = 0 (i.e. no ECSN!!!)
 *
@@ -694,7 +698,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                   kw = 11
               elseif(((ecsn.gt.0.d0.and.mcbagb.ge.ecsn_mlow.and.
      &               mcbagb.le.ecsn).or.
-     &               (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))
+     &               (ecsn.eq.-1.d0.and.mc.ge.1.37d0.and.mc.le.1.43d0))
      &               .and.mc.lt.1.08d0)then
                   kw = 11
 *               elseif(mcbagb.ge.1.6d0.and.mcbagb.le.2.5d0.and.
@@ -711,7 +715,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *
             else
                if((ecsn.gt.0.d0.and.mcbagb.lt.ecsn_mlow).or.
-     &          (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))then
+     &          (ecsn.eq.-1.d0.and.mc.lt.1.37d0))then
 *
 * Star is not massive enough to ignite C burning.
 * so no remnant is left after the SN
@@ -760,7 +764,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
                         mcx = 1.38d0
                     elseif(ecsn.eq.-1.d0.and.
-     &                  mc.gt.1.37d0.and.mc.lt.1.43d0) then
+     &                  mc.ge.1.37d0.and.mc.le.1.43d0) then
                         mcx = mc
                         ecsntauris15 = 1.d0
                      elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then !this should be ecsn, unless ecsn=0
@@ -931,6 +935,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         ecsntauris15 = 1.d0
 
 
+
                     else
                         call nearest_remnant(MheTEST_N20,MremTEST_N20,
      &                  kstarTEST_N20,sizedatatest,mt)
@@ -941,6 +946,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mt=remmass
                         mc = mt
                     endif
+
 
                   endif
 
@@ -1137,8 +1143,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                mc = mcmax
                if(mc.lt.mch)then
                   if((ecsn.gt.0.d0.and.mass.lt.ecsn_mlow).or.
-     &              (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.
-     &              mc.lt.1.43d0))then
+     &              (ecsn.eq.-1.d0.and.mc.lt.1.37d0))then
                      mt = MAX(mc,(mc+0.31d0)/1.45d0)
                      kw = 11
                   elseif(ecsn.eq.0.d0.and.mass.lt.1.6d0)then
@@ -1149,7 +1154,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      kw = 11
                  elseif(((ecsn.gt.0.d0.and.mass.gt.ecsn_mlow.and.
      &               mass.le.ecsn).or.
-     &               (ecsn.eq.-1.d0.and.mc.gt.1.37d0.and.mc.lt.1.43d0))
+     &               (ecsn.eq.-1.d0.and.mc.ge.1.37d0.and.mc.le.1.43d0))
      &               .and.mc.le.1.08d0)then
                          mt = MAX(mc,(mc+0.31d0)/1.45d0)
                          kw = 11
@@ -1163,8 +1168,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                   mass = mt
                else
                   if((ecsn.gt.0.d0.and.mass.lt.ecsn_mlow).or.
-     &              (ecsn.eq.-1.d0.and.mc.gt.1.37d0
-     &              .and.mc.lt.1.43d0))then
+     &              (ecsn.eq.-1.d0.and.mc.lt.1.37d0))then
                      kw = 15
                      aj = 0.d0
                      mt = 0.d0
@@ -1205,7 +1209,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(ecsn.gt.0.d0.and.mc.le.ecsn)then
                         mcx = 1.38d0
                      elseif(ecsn.eq.-1.d0.and.
-     &                   mc.gt.1.37d0.and.mc.lt.1.43d0) then
+     &                   mc.ge.1.37d0.and.mc.le.1.43d0) then
                         mcx = mc
                         ecsntauris15 = 1.d0
                      elseif(ecsn.eq.0.d0.and.mc.le.2.25d0)then !this should be ecsn, unless ecsn=0
@@ -1355,6 +1359,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *Sukhbold+16. Then it interpolates the remnant mass.
 *
 
+
                     if(ecsn.gt.0.d0.and.mc.le.ecsn)then
                         mcx = 1.38d0
                         fallback = 0.2d0 / (mt - mcx)
@@ -1370,7 +1375,6 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         fallback = 0.2d0 / (mt - mcx)
                         mt = mcx
                         ecsntauris15 = 1.d0
-
 
                     else
                         call nearest_remnant(MheTEST_N20,MremTEST_N20,
@@ -1543,7 +1547,8 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *
          mc = mt
          mchold = mch
-         if((ecsn.gt.0.d0.or.ecsn.eq.-1.0d0).and.kw.eq.12) mch = 1.38d0
+         if((ecsn.gt.0.d0).and.kw.eq.12) mch = 1.38d0
+         if((ecsn.eq.-1.0d0).and.kw.eq.12) mch = 1.37d0
          if(mc.ge.mch)then
 *
 * Accretion induced supernova with no remnant
@@ -1554,9 +1559,13 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                kw = 13
                aj = 0.d0
                mt = 1.3d0
-               if(ecsn.gt.0.d0.or.ecsn.eq.-1.0d0)then
+               if(ecsn.gt.0.d0)then
                   mt = 1.38d0
                   mt = 0.9d0*mt !in ST this is a quadratic, will add in later.
+
+               elseif(ecsn.eq.-1.0d0) then
+                   mt = 1.37d0
+                   mt = 0.9d0*mt !in ST this is a quadratic, will add in later.
                endif
             else
                kw = 15
