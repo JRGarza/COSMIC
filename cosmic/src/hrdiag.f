@@ -893,16 +893,17 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *Sukhbold+16. Then it interpolates the remnant mass.
 *
 
-                    if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
-                       mcx = 1.38d0
-                       fallback = 0.2d0 / (mt - mcx)
-                       mt = mcx + 0.2d0
-                    elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then
-                       !this should be ecsn, unless ecsn=0
+                    
+                    if(ecsn.gt.0.d0.and.mt.le.ecsn)then
                        mcx = 1.38d0
                        fallback = 0.2d0 / (mt - mcx)
                        mt = mcx + 0.2d0
                        mt=mt-0.2d0
+                   elseif(ecsn.eq.0.d0.and.mt.le.2.25d0)then
+                       !this should be ecsn, unless ecsn=0
+                       mcx = 1.38d0
+                       fallback = 0.2d0 / (mt - mcx)
+                       mt = mcx + 0.2d0
 
                     else
                         call nearest_remnant(MheTEST_N20,MremTEST_N20,
@@ -1313,12 +1314,13 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                        mcx = 1.38d0
                        fallback = 0.2d0 / (mt - mcx)
                        mt = mcx + 0.2d0
+                       mt=mt-0.2d0
                    elseif(ecsn.eq.0.d0.and.mt.le.2.25d0)then
                        !this should be ecsn, unless ecsn=0
                        mcx = 1.38d0
                        fallback = 0.2d0 / (mt - mcx)
                        mt = mcx + 0.2d0
-                       mt=mt-0.2d0
+
 
                     else
                         call nearest_remnant(MheTEST_N20,MremTEST_N20,
