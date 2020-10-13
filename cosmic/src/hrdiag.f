@@ -837,6 +837,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 * Use the "Delayed" SN Prescription (Fryer et al. 2012, APJ, 749,91)
 *
 *                    For this, we just set the proto-core mass to one
+
                      if(mc.le.3.5d0)then
                         mcx = 1.2d0
                      elseif(mc.le.6.d0)then
@@ -846,10 +847,18 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      elseif(mc.gt.11.d0)then
                         mcx = 1.6d0
                      endif
+
+                     if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
+                        mcx = 1.38d0
+                     elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then !this should be ecsn, unless ecsn=0
+                        mcx = 1.38d0
+                     endif
+
+
                      if(mc.lt.2.5d0)then
                         fallback = 0.2d0 / (mt - mcx)
-                        mt = mcx + 0.2
-                        fallback = 0.d0
+                        mt = mcx + 0.2d0
+                        if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)mt=mt-0.2d0
                      elseif(mc.lt.3.5d0)then
                         fallback = (0.5d0 * mc - 1.05d0) / (mt - mcx)
                         mt = mcx + 0.5d0 * mc - 1.05d0
@@ -884,14 +893,27 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *Sukhbold+16. Then it interpolates the remnant mass.
 *
 
-                    call nearest_remnant(MheTEST_N20,MremTEST_N20,
-     &              kstarTEST_N20,sizedatatest,mt)
+                    if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
+                       mcx = 1.38d0
+                       fallback = 0.2d0 / (mt - mcx)
+                       mt = mcx + 0.2d0
+                    elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then
+                       !this should be ecsn, unless ecsn=0
+                       mcx = 1.38d0
+                       fallback = 0.2d0 / (mt - mcx)
+                       mt = mcx + 0.2d0
+                       mt=mt-0.2d0
 
-*                   estimate for the fallback fraction
-                    fallback = remmass / mt
-                    kw=kresult
-                    mt=remmass
-                    mc = mt
+                    else
+                        call nearest_remnant(MheTEST_N20,MremTEST_N20,
+     &                   kstarTEST_N20,sizedatatest,mt)
+
+*                       estimate for the fallback fraction
+                        fallback = remmass / mt
+                        kw=kresult
+                        mt=remmass
+                        mc = mt
+                    endif
 
                   endif
 
@@ -1196,8 +1218,9 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.38d0
                      endif
                      if(mc.le.2.5d0)then
-                        mt = mcx + 0.2d0
-                        fallback = 0.d0
+                         fallback = 0.2d0 / (mt - mcx)
+                         mt = mcx + 0.2d0
+                         if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)mt=mt-0.2d0
                      elseif(mc.le.6.d0)then
                         fallback = (0.286d0*mc - 0.514d0) / (mt - mcx)
                         mt = mcx + 0.286d0*mc - 0.514d0
@@ -1239,9 +1262,18 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      elseif(mc.gt.11.d0)then
                         mcx = 1.6d0
                      endif
+
+                     if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
+                        mcx = 1.38d0
+                     elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then !this should be ecsn, unless ecsn=0
+                        mcx = 1.38d0
+                     endif
+
+
                      if(mc.lt.2.5d0)then
-                        mt = mcx + 0.2
-                        fallback = 0.d0
+                         fallback = 0.2d0 / (mt - mcx)
+                         mt = mcx + 0.2d0
+                        if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)mt=mt-0.2d0
                      elseif(mc.lt.3.5d0)then
                         fallback = (0.5d0 * mc - 1.05d0) / (mt - mcx)
                         mt = mcx + 0.5d0 * mc - 1.05d0
@@ -1276,14 +1308,28 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *Sukhbold+16. Then it interpolates the remnant mass.
 *
 
-                    call nearest_remnant(MheTEST_N20,MremTEST_N20,
-     &              kstarTEST_N20,sizedatatest,mt)
 
-*                   estimate for the fallback fraction
-                    fallback = remmass / mt
-                    kw=kresult
-                    mt=remmass
-                    mc = mt
+                    if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
+                       mcx = 1.38d0
+                       fallback = 0.2d0 / (mt - mcx)
+                       mt = mcx + 0.2d0
+                    elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then
+                       !this should be ecsn, unless ecsn=0
+                       mcx = 1.38d0
+                       fallback = 0.2d0 / (mt - mcx)
+                       mt = mcx + 0.2d0
+                       mt=mt-0.2d0
+
+                    else
+                        call nearest_remnant(MheTEST_N20,MremTEST_N20,
+     &                   kstarTEST_N20,sizedatatest,mt)
+
+*                       estimate for the fallback fraction
+                        fallback = remmass / mt
+                        kw=kresult
+                        mt=remmass
+                        mc = mt
+                    endif
 
                   endif
 
