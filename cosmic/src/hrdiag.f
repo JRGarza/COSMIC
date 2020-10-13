@@ -1212,15 +1212,15 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *
 *                    We use the updated proto-core mass from Giacobbo & Mapelli 2020
                      mcx = 1.1d0
-                     if(ecsn.gt.0.d0.and.mc.le.ecsn)then
+                     if(ecsn.gt.0.d0.and.mt.le.ecsn)then
                         mcx = 1.38d0
-                     elseif(ecsn.eq.0.d0.and.mc.le.2.25d0)then !this should be ecsn, unless ecsn=0
+                     elseif(ecsn.eq.0.d0.and.mt.le.2.25d0)then !this should be ecsn, unless ecsn=0
                         mcx = 1.38d0
                      endif
                      if(mc.le.2.5d0)then
                          fallback = 0.2d0 / (mt - mcx)
                          mt = mcx + 0.2d0
-                         if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)mt=mt-0.2d0
+                         if(ecsn.gt.0.d0.and.mt.le.ecsn)mt=mt-0.2d0
                      elseif(mc.le.6.d0)then
                         fallback = (0.286d0*mc - 0.514d0) / (mt - mcx)
                         mt = mcx + 0.286d0*mc - 0.514d0
@@ -1263,9 +1263,9 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                         mcx = 1.6d0
                      endif
 
-                     if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
+                     if(ecsn.gt.0.d0.and.mt.le.ecsn)then
                         mcx = 1.38d0
-                     elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then !this should be ecsn, unless ecsn=0
+                    elseif(ecsn.eq.0.d0.and.mt.le.2.25d0)then !this should be ecsn, unless ecsn=0
                         mcx = 1.38d0
                      endif
 
@@ -1273,7 +1273,7 @@ C      if(mt0.gt.100.d0) mt = 100.d0
                      if(mc.lt.2.5d0)then
                          fallback = 0.2d0 / (mt - mcx)
                          mt = mcx + 0.2d0
-                        if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)mt=mt-0.2d0
+                        if(ecsn.gt.0.d0.and.mt.le.ecsn)mt=mt-0.2d0
                      elseif(mc.lt.3.5d0)then
                         fallback = (0.5d0 * mc - 1.05d0) / (mt - mcx)
                         mt = mcx + 0.5d0 * mc - 1.05d0
@@ -1309,11 +1309,11 @@ C      if(mt0.gt.100.d0) mt = 100.d0
 *
 
 
-                    if(ecsn.gt.0.d0.and.mcbagb.le.ecsn)then
+                    if(ecsn.gt.0.d0.and.mt.le.ecsn)then
                        mcx = 1.38d0
                        fallback = 0.2d0 / (mt - mcx)
                        mt = mcx + 0.2d0
-                    elseif(ecsn.eq.0.d0.and.mcbagb.le.2.25d0)then
+                   elseif(ecsn.eq.0.d0.and.mt.le.2.25d0)then
                        !this should be ecsn, unless ecsn=0
                        mcx = 1.38d0
                        fallback = 0.2d0 / (mt - mcx)
