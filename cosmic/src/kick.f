@@ -23,7 +23,7 @@
 * velocity and the total change in the orbital plane tilt after both
 * supernovae, as well as reproduce systems.
 * The first row contains information about the first supernova that
-* occurs, the second row the second supernova. 
+* occurs, the second row the second supernova.
 * Note that some values the second row will take into account the
 * effect of the first SN (e.g., kick_info[2,10] is the total systemic
 * velocity after both supernovae).
@@ -36,11 +36,11 @@
 * kick_info[i,7-9]: change in 3D systemic velocity of the binary, or the
 *       change in 3D velocity of snstar=1 if the system is disrupted
 * kick_info[i,10]: magnitude of systemic velocity of the binary if bound
-*       or magnitude of total velocity of snstar=1 if disrupted, 
+*       or magnitude of total velocity of snstar=1 if disrupted,
 *       accounting for both SNe
 * kick_info[i,11-13]: change in 3D velocity of the snstar=2 if system
 *       is disrupted
-* kick_info[i,14]: magnitude of velocity of snstar=2 if disrupted, 
+* kick_info[i,14]: magnitude of velocity of snstar=2 if disrupted,
 *       accounting for both SNe
 * kick_info[i,15]: (total) tilt of the orbital plane after each SN
 *       w.r.t. the original angular momentum axis after each SN
@@ -219,6 +219,7 @@
                  fallback = MIN(fallback,1.d0)
                  vk = MAX((1.d0-fallback)*vk,0.d0)
                  vk2 = vk*vk
+                 write(*,*) fallback , vk, vk2
              elseif(kw.eq.14.and.bhflag.eq.2)then
                 vk = vk * mxns / m1n
                 vk2 = vk*vk
@@ -236,7 +237,7 @@
              vk = alphakick * ((m1-m1n)/m1n) + betakick
              vk2 = vk*vk
           endif
-             
+
       endif
       sigma = sigmah
 
@@ -562,17 +563,17 @@
       if(ecc.gt.99.9d0) ecc = 99.9d0
 
 * For systems that were distrupted in the first SN, skip to here
- 73   continue  
+ 73   continue
 *
 * Set systemic velocity magnitudes in the kick_info array
-* For first SN, this should be identical to the magnitude 
+* For first SN, this should be identical to the magnitude
 * of the three component vectors. For the second SN, this
 * will be the systemic velocity relative to the initial frame.
       if(sn.eq.1)then
-         kick_info(sn,10) = SQRT(kick_info(sn,7)*kick_info(sn,7) + 
+         kick_info(sn,10) = SQRT(kick_info(sn,7)*kick_info(sn,7) +
      &              kick_info(sn,8)*kick_info(sn,8) +
      &              kick_info(sn,9)*kick_info(sn,9))
-         kick_info(sn,14) = SQRT(kick_info(sn,11)*kick_info(sn,11) + 
+         kick_info(sn,14) = SQRT(kick_info(sn,11)*kick_info(sn,11) +
      &              kick_info(sn,12)*kick_info(sn,12) +
      &              kick_info(sn,13)*kick_info(sn,13))
       elseif(sn.eq.2)then
