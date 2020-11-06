@@ -219,7 +219,6 @@
                  fallback = MIN(fallback,1.d0)
                  vk = MAX((1.d0-fallback)*vk,0.d0)
                  vk2 = vk*vk
-                 write(*,*) fallback , vk, vk2
              elseif(kw.eq.14.and.bhflag.eq.2)then
                 vk = vk * mxns / m1n
                 vk2 = vk*vk
